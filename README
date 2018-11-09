@@ -1,18 +1,17 @@
-Requires:
-  tor
-  tor-resolve
-  printf
-  ncat
-  ssh
-  python3
+# SSH Connector
+A script that tries to connect to a configured host directly using an IP or DNS name and a Tor hidden service.
 
+## Requires:
+### Client on Arch Linux
+* A tor client setup and running, listening on port 9060 for incoming socks proxy connections.
+* `tor-resolve` command that is included in the "tor" package.
+* `ncat` command that is included in the "nmap" package.
+* ssh
+* python3 to run the script.
+### Server on Arch Linux
+* A tor hidden service setup and running on the same port as the SSH server.
+* An SSH server.
 
-Onion | an address to a tor hidden service
-DNS   | DNS or an ip address
-Port  | port of ssh, and the hidden service (must be the same)
-
-Python version:
+## How to use
+Setup an Arch Linux server running an SSH server with the port forwarded
   If you set up a server and change the DNS, Onion, User, and Port in the hosts array near the top, it should work. This one was just written a couple days ago as an incomplete rewrite of the bash version.
-
-Bash version:
-  This one is 6 months old. It should also work if you change the dns, onion, and root at line 39 in connect_commented.sh
