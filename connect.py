@@ -263,7 +263,8 @@ def main():
   build_in_rules = []
 
   # Can append ports to this list to have them forwarded from the local host to the remote host for every connection.
-  # build_in_rules.append(8080)
+  for p in range(25500, 25600):
+  	build_in_rules.append(p)
 
   for port in build_in_rules:
     extra_options.append('-L{l}:{p}:{r}:{p}'.format(l='127.0.0.2', r='127.0.0.1', p=port))

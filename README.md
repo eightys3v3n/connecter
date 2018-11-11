@@ -1,5 +1,5 @@
 # SSH Connector
-A script that tries to connect to a configured host using the fastest method possible of IP/DNS through port forwarding or through a Tor hidden service.
+A script that tries to connect to a configured host using the fastest method possible of IP/DNS through port forwarding or through a Tor hidden service. Also configurable ports to forward from local to server (see Auto-port forwarding)
 
 ## Requires:
 ### Client on Arch Linux
@@ -27,3 +27,6 @@ Run the script with connect.json in one of the searched paths (see RC_FILE_PATHS
 ### RC_FILE_PATHS
 The variable at the top of connect.py contains all the paths that will be read in. It will read all the files that exist. Any path that doesn't start with `/` will have the path of the script prepended to it upon run.
 E.G. If the script is located in `/usr/bin/connect.py` and `RC_FILE_PATHS = ['connect.json']` then `/usr/bin/connect.json` will be read in.
+
+### Auto-port forwarding
+Ports can be added to the build_in_rules list in the main function around line 263. They will be forwarded using the SSH option -L.
