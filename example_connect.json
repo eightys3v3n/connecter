@@ -1,0 +1,1 @@
+{"server": {"user": "root", "dns": "dns or ip", "onion": ".onion address for tor hidden service", "port": "22"}}

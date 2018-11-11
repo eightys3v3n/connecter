@@ -1,5 +1,5 @@
 # SSH Connector
-A script that tries to connect to a configured host directly using an IP or DNS name and a Tor hidden service.
+A script that tries to connect to a configured host using the fastest method possible of IP/DNS through port forwarding or through a Tor hidden service.
 
 ## Requires:
 ### Client on Arch Linux
@@ -13,5 +13,17 @@ A script that tries to connect to a configured host directly using an IP or DNS 
 * An SSH server.
 
 ## How to use
-Setup an Arch Linux server running an SSH server with the port forwarded
-  If you set up a server and change the DNS, Onion, User, and Port in the hosts array near the top, it should work. This one was just written a couple days ago as an incomplete rewrite of the bash version.
+Setup an Arch Linux server running an SSH server with the port forwarded.
+Rename example_connect.json to connect.json (see RC_FILE_PATHS).
+Replace the values in connect.json with those for your server.
+Run the script with connect.json in one of the searched paths (see RC_FILE_PATHS).
+
+## Information
+### Connections are attempted as follows:
+* Directly to IP/DNS:port.
+* (TODO) Directly to IP as reported by server via a Tor connection.
+* Through Tor.
+
+### RC_FILE_PATHS
+The variable at the top of connect.py contains all the paths that will be read in. It will read all the files that exist. Any path that doesn't start with `/` will have the path of the script prepended to it upon run.
+E.G. If the script is located in `/usr/bin/connect.py` and `RC_FILE_PATHS = ['connect.json']` then `/usr/bin/connect.json` will be read in.

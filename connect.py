@@ -4,6 +4,8 @@
 tries a variety of means to connect to a specified host. (direct, through tor)
 """
 
+import os
+import json
 from os import system
 from sys import argv
 from getopt import getopt
@@ -12,23 +14,25 @@ from time import sleep
 from itertools import chain
 
 
+global RC_FILE_PATHS
 global verbose
 global wait_time
 global tor_address
 global tor_port
 global hosts
 
+RC_FILE_PATHS = ['connect.json']
 verbose = False
 wait_time = '4'
 tor_address = '127.0.0.1'
 tor_port = '9060'
 hosts   = {
-  'server':{
-    'user' :'username',
-    'dns'  :'DNS name or IP for server',
-    'onion':'Onion address for same server',
-    'port' :'22'
-  }
+  # 'example_server':{
+  #   'user' :'username',
+  #   'dns'  :'DNS name or IP for server',
+  #   'onion':'Onion address for same server',
+  #   'port' :'22'
+  # }
 }
 
 
@@ -112,7 +116,7 @@ def try_onion(host):
     True if successfully connected
     False otherwise
   """
-  address = tor_resolve( host )
+  address = tor_resolve(host)
   return ncat_ping(address, hosts[host]['port'], proxy=tor_address+':'+tor_port)
 
 
@@ -190,11 +194,34 @@ def PrintHelp():
       print(format.format(*help, desc=desc, width=optionlen))
 
 
+def load_rc_file(paths, hosts):
+	for path in paths:
+		if os.path.exists(path):
+			try:
+				_hosts = json.loads(open(path, 'r').read())
+				hosts.update(_hosts)
+			except Exception as e:
+				print("Failed to load RC file", path, e)
+		else:
+			print("RC file doesn't exist '{}'".format(path))
+
+
+def set_rc_file_paths():
+	global RC_FILE_PATHS
+	self_path = os.path.dirname(os.path.realpath(__file__))
+	for i, p in enumerate(RC_FILE_PATHS):
+		if not p.startswith('/'):
+			RC_FILE_PATHS[i] = os.path.join(self_path, p)
+
+
 def main():
-  global verbose, hosts
+  global verbose, hosts, RC_FILE_PATHS
   target = None # alias for the computer to connect to
   mode = 'auto'
   extra_options = []
+
+
+  set_rc_file_paths()
 
   opts, args = getopt( argv[1:], 'hvt:doL:R:', [ 'help', 'verbose', 'target=', 'dns', 'onion', 'local=', 'remote=' ] )
 
@@ -226,6 +253,8 @@ def main():
   for arg in args:
     if target is None:
       target = arg
+
+  load_rc_file(RC_FILE_PATHS, hosts)
 
   # default target
   if target is None:
