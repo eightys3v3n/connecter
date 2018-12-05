@@ -43,7 +43,7 @@ def ncat_ping(address, port, wait=None, proxy=None):
   address | a dns or ip address
   port    | a port number
   wait    | seconds to wait before failing connection (in a string)
-  proxy   | address:port of socks4 proxy to connect through
+  proxy   | address:port of socks5 proxy to connect through
 
   Returns:
     True if successfull connection
@@ -52,9 +52,9 @@ def ncat_ping(address, port, wait=None, proxy=None):
   if wait is None:
     wait = wait_time
 
-  c = ['ncat','-w',wait,address,port]
+  c = ['ncat','-w', wait, address, port]
   if proxy is not None:
-    c.extend( ['--proxy-type','socks4','--proxy',proxy] )
+    c.extend(['--proxy-type', 'socks5', '--proxy', proxy])
 
   p = Popen( c, stdin=PIPE, stdout=PIPE, stderr=PIPE )
   r = p.communicate()
@@ -264,10 +264,11 @@ def main():
 
   # Can append ports to this list to have them forwarded from the local host to the remote host for every connection.
   for p in range(25500, 25600):
-  	build_in_rules.append(p)
+  	build_in_rules.append((p, p))
+  build_in_rules.append((58847, 58846))
 
   for port in build_in_rules:
-    extra_options.append('-L{l}:{p}:{r}:{p}'.format(l='127.0.0.2', r='127.0.0.1', p=port))
+    extra_options.append('-L{l}:{lp}:{r}:{rp}'.format(l='127.0.0.2', r='127.0.0.1', lp=port[0], rp=port[1]))
 
   connect(target, mode, options=extra_options, verbose=verbose)
 
